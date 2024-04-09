@@ -3,4 +3,4 @@ spring:
     name: coupon-api
 
 server:
-  port: 9090
+  port: 8080
