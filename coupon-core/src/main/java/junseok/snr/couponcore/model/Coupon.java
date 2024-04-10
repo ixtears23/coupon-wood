@@ -1,5 +1,7 @@
 package junseok.snr.couponcore.model;
 
+import exception.CouponIssueException;
+import exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -55,11 +57,15 @@ public class Coupon extends BaseTimeEntity {
 
     public void issue() {
         if (!availableIssueQuantity()) {
-            throw new RuntimeException("수량 검증");
+            throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_QUANTITY,
+                    "발급 가능한 수량을 초과합니다. total : %s, issued: %s".formatted(
+                            this.totalQuantity, this.issuedQuantity));
         }
 
         if (!availableIssueDate()) {
-            throw new RuntimeException("기한 검증");
+            throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_DATE,
+                    "발급 가능한 일자가 아닙니다. request : %s, issueStart : %s, issueEnd : %s".formatted(
+                            LocalDateTime.now(), this.dateIssueStart, this.dateIssueEnd));
         }
 
         issuedQuantity++;
