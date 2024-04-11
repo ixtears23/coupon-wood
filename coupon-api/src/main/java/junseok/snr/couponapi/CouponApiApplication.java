@@ -1,11 +1,11 @@
 package junseok.snr.couponapi;
 
-import junseok.snr.couponcore.CouponConfiguration;
+import junseok.snr.couponcore.CouponCoreConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-@Import(CouponConfiguration.class)
+@Import(CouponCoreConfiguration.class)
 @SpringBootApplication
 public class CouponApiApplication {
 
