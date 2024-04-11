@@ -1,4 +1,4 @@
-package exception;
+package junseok.snr.couponcore.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

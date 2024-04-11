@@ -1,7 +1,7 @@
 package junseok.snr.couponcore.model;
 
-import exception.CouponIssueException;
-import exception.ErrorCode;
+import junseok.snr.couponcore.exception.CouponIssueException;
+import junseok.snr.couponcore.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
