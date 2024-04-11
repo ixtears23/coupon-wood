@@ -137,5 +137,51 @@ class CouponIssueServiceTest extends TestConfig {
         assertEquals(exception.getErrorCode(), ErrorCode.INVALID_COUPON_ISSUE_DATE);
     }
 
+    @DisplayName("중복 발급 검증에 문제가 있다면 예외를 반환한다")
+    @Test
+    void issueTest04() {
+
+        long userId = 1;
+
+        final Coupon coupon = Coupon.builder()
+                .couponType(CouponType.FIRST_COME_FIRST_SERVED)
+                .title("선착순 테스트 쿠폰")
+                .totalQuantity(100)
+                .issuedQuantity(0)
+                .dateIssueStart(LocalDateTime.now().minusDays(1))
+                .dateIssueEnd(LocalDateTime.now().plusDays(1))
+                .build();
+
+        couponJpaRepository.save(coupon);
+
+        final CouponIssue couponIssue = CouponIssue.builder()
+                .couponId(coupon.getId())
+                .userId(userId)
+                .build();
+
+        couponIssueJpaRepository.save(couponIssue);
+
+        final CouponIssueException exception = assertThrows(CouponIssueException.class, () -> {
+            couponIssueService.issue(coupon.getId(), userId);
+        });
+
+        assertEquals(exception.getErrorCode(), ErrorCode.DUPLICATED_COUPON_ISSUE);
+    }
+
+
+    @DisplayName("쿠폰이 존재하지 않는다면 예외를 반환한다")
+    @Test
+    void issueTest05() {
+
+        long userId = 1;
+        long couponId = 1;
+
+        final CouponIssueException exception = assertThrows(CouponIssueException.class, () -> {
+            couponIssueService.issue(couponId, userId);
+        });
+
+        assertEquals(exception.getErrorCode(), ErrorCode.COUPON_NOT_EXIST);
+    }
+
 
 }
