@@ -3,7 +3,9 @@ package junseok.snr.couponcore.service;
 import junseok.snr.couponcore.TestConfig;
 import junseok.snr.couponcore.exception.CouponIssueException;
 import junseok.snr.couponcore.exception.ErrorCode;
+import junseok.snr.couponcore.model.Coupon;
 import junseok.snr.couponcore.model.CouponIssue;
+import junseok.snr.couponcore.model.CouponType;
 import junseok.snr.couponcore.repository.mysql.CouponIssueJpaRepository;
 import junseok.snr.couponcore.repository.mysql.CouponIssueRepository;
 import junseok.snr.couponcore.repository.mysql.CouponJpaRepository;
@@ -11,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,7 +46,6 @@ class CouponIssueServiceTest extends TestConfig {
 
         couponIssueJpaRepository.save(couponIssue);
 
-
         final CouponIssueException exception = assertThrows(CouponIssueException.class, () -> {
             couponIssueService.saveCouponIssue(couponIssue.getCouponId(), couponIssue.getUserId());
         });
@@ -60,5 +63,79 @@ class CouponIssueServiceTest extends TestConfig {
 
         assertTrue(couponIssueJpaRepository.findById(savedCouponIssue.getId()).isPresent());
     }
+
+    @DisplayName("발급 수량, 기한, 중복 발급 문제가 없다면 쿠폰을 발급한다")
+    @Test
+    void issue01() {
+        long userId = 1;
+
+        final Coupon coupon = Coupon.builder()
+                .couponType(CouponType.FIRST_COME_FIRST_SERVED)
+                .title("선착순 테스트 쿠폰")
+                .totalQuantity(100)
+                .issuedQuantity(0)
+                .dateIssueStart(LocalDateTime.now().minusDays(1))
+                .dateIssueEnd(LocalDateTime.now().plusDays(1))
+                .build();
+
+        couponJpaRepository.save(coupon);
+
+        couponIssueService.issue(coupon.getId(), userId);
+
+        final Coupon savedCoupon = couponJpaRepository.findById(coupon.getId()).get();
+
+        assertEquals(savedCoupon.getIssuedQuantity(), 1);
+
+        final CouponIssue firstCouponIssue = couponIssueRepository.findFirstCouponIssue(savedCoupon.getId(), userId);
+        assertNotNull(firstCouponIssue);
+    }
+
+
+    @DisplayName("발급 수량에 문제가 있다면 예외를 반환한다")
+    @Test
+    void issue02() {
+        long userId = 1;
+
+        final Coupon coupon = Coupon.builder()
+                .couponType(CouponType.FIRST_COME_FIRST_SERVED)
+                .title("선착순 테스트 쿠폰")
+                .totalQuantity(100)
+                .issuedQuantity(100)
+                .dateIssueStart(LocalDateTime.now().minusDays(1))
+                .dateIssueEnd(LocalDateTime.now().plusDays(1))
+                .build();
+
+        couponJpaRepository.save(coupon);
+
+        final CouponIssueException exception = assertThrows(CouponIssueException.class, () -> {
+            couponIssueService.issue(coupon.getId(), userId);
+        });
+
+        assertEquals(exception.getErrorCode(), ErrorCode.INVALID_COUPON_ISSUE_QUANTITY);
+    }
+
+    @DisplayName("발급 기한에 문제가 있다면 예외를 반환한다")
+    @Test
+    void issue03() {
+        long userId = 1;
+
+        final Coupon coupon = Coupon.builder()
+                .couponType(CouponType.FIRST_COME_FIRST_SERVED)
+                .title("선착순 테스트 쿠폰")
+                .totalQuantity(100)
+                .issuedQuantity(0)
+                .dateIssueStart(LocalDateTime.now().minusDays(1))
+                .dateIssueEnd(LocalDateTime.now().plusDays(-1))
+                .build();
+
+        couponJpaRepository.save(coupon);
+
+        final CouponIssueException exception = assertThrows(CouponIssueException.class, () -> {
+            couponIssueService.issue(coupon.getId(), userId);
+        });
+
+        assertEquals(exception.getErrorCode(), ErrorCode.INVALID_COUPON_ISSUE_DATE);
+    }
+
 
 }
