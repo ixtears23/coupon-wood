@@ -1,6 +1,7 @@
 package junseok.snr.couponapi.controller;
 
 import junseok.snr.couponapi.controller.dto.CouponIssueRequestDto;
+import junseok.snr.couponapi.controller.dto.CouponIssueResponseDto;
 import junseok.snr.couponapi.service.CouponIssueRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +14,9 @@ public class CouponIssueController {
     private final CouponIssueRequestService couponIssueRequestService;
 
     @PostMapping("/v1/issue")
-    public boolean issueV1(@RequestBody CouponIssueRequestDto requestDto) {
+    public CouponIssueResponseDto issueV1(@RequestBody CouponIssueRequestDto requestDto) {
         couponIssueRequestService.issueRequestV1(requestDto);
-        return false;
+        return new CouponIssueResponseDto(true, null);
     }
 
 }
