@@ -20,4 +20,9 @@ public class CouponIssueRequestService  {
         );
         log.info("쿠폰 발급 완료. couponId: {}, userId:{}", requestDto.couponId(), requestDto.userId());
     }
+
+    public void issueRequestWithLockV1(CouponIssueRequestDto requestDto) {
+        couponIssueService.issueWithLock(requestDto.couponId(), requestDto.userId());
+        log.info("쿠폰 발급 완료. couponId: {}, userId:{}", requestDto.couponId(), requestDto.userId());
+    }
 }
