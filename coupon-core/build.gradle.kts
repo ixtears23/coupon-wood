@@ -6,8 +6,11 @@ repositories {
 	mavenCentral()
 }
 
+val redissonVersion = "3.28.0"
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.redisson:redisson-spring-boot-starter:${redissonVersion}")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
