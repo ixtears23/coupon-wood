@@ -25,4 +25,8 @@ public class RedisRepository {
         return redisTemplate.opsForSet().isMember(key, value);
     }
 
+    public Long rPush(String key, String value) {
+        return redisTemplate.opsForList().rightPush(key, value);
+    }
+
 }
