@@ -11,4 +11,4 @@ class HelloWorld(FastHttpUser):
             "userId": random.randint(1, 10000000),
             "couponId": 1,
         }
-        self.client.post("/v1/async-issue", json=payload)
+        self.client.post("/v1/issue-async", json=payload)
