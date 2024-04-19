@@ -17,13 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 
 import static junseok.snr.couponcore.util.CouponRedisUtils.getIssueRequestKey;
 import static junseok.snr.couponcore.util.CouponRedisUtils.getIssueRequestQueueKey;
-import static org.junit.jupiter.api.Assertions.*;
 
 class AsyncCouponIssueServiceV1Test extends TestConfig {
 
