@@ -11,6 +11,6 @@ public class CouponConsumerApplication {
 
     public static void main(String[] args) {
         System.setProperty("spring.config.name", "application-core, application-consumer");
-        SpringApplication.run(CouponCoreConfiguration.class, args);
+        SpringApplication.run(CouponConsumerApplication.class, args);
     }
 }
