@@ -13,6 +13,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.redisson:redisson-spring-boot-starter:${redissonVersion}")
+	implementation("com.github.ben-manes.caffeine:caffeine")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

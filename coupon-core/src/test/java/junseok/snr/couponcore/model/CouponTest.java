@@ -2,6 +2,7 @@ package junseok.snr.couponcore.model;
 
 import junseok.snr.couponcore.exception.CouponIssueException;
 import junseok.snr.couponcore.exception.ErrorCode;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -141,4 +142,48 @@ class CouponTest {
                 .isEqualTo(ErrorCode.INVALID_COUPON_ISSUE_DATE);
     }
 
+    @Test
+    @DisplayName("발급 기간이 종료되면 true를 반환한다")
+    void isIssueComplete_1() {
+        final Coupon coupon = Coupon.builder()
+                .totalQuantity(100)
+                .issuedQuantity(0)
+                .dateIssueStart(LocalDateTime.now().minusDays(2))
+                .dateIssueEnd(LocalDateTime.now().minusDays(1))
+                .build();
+
+        final boolean result = coupon.isIssueComplete();
+
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("잔여 발급 가능 수량이 없다면 true를 반환한다")
+    void isIssueComplete_2() {
+        final Coupon coupon = Coupon.builder()
+                .totalQuantity(100)
+                .issuedQuantity(100)
+                .dateIssueStart(LocalDateTime.now().minusDays(2))
+                .dateIssueEnd(LocalDateTime.now().plusDays(1))
+                .build();
+
+        final boolean result = coupon.isIssueComplete();
+
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("발급 기한과 수량이 유효하면 false를 반환한다")
+    void isIssueComplete_3() {
+        final Coupon coupon = Coupon.builder()
+                .totalQuantity(100)
+                .issuedQuantity(0)
+                .dateIssueStart(LocalDateTime.now().minusDays(2))
+                .dateIssueEnd(LocalDateTime.now().plusDays(1))
+                .build();
+
+        final boolean result = coupon.isIssueComplete();
+
+        Assertions.assertFalse(result);
+    }
 }

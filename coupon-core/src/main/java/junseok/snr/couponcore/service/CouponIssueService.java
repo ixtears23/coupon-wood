@@ -4,10 +4,12 @@ import junseok.snr.couponcore.exception.CouponIssueException;
 import junseok.snr.couponcore.exception.ErrorCode;
 import junseok.snr.couponcore.model.Coupon;
 import junseok.snr.couponcore.model.CouponIssue;
+import junseok.snr.couponcore.model.event.CouponIssueCompleteEvent;
 import junseok.snr.couponcore.repository.mysql.CouponIssueJpaRepository;
 import junseok.snr.couponcore.repository.mysql.CouponIssueRepository;
 import junseok.snr.couponcore.repository.mysql.CouponJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +19,20 @@ public class CouponIssueService {
     private final CouponJpaRepository couponJpaRepository;
     private final CouponIssueJpaRepository couponIssueJpaRepository;
     private final CouponIssueRepository couponIssueRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void issue(long couponId, long userId) {
         final Coupon coupon = findCoupon(couponId);
         coupon.issue();
         saveCouponIssue(couponId, userId);
+        publishCouponEvent(coupon);
+    }
+
+    private void publishCouponEvent(Coupon coupon) {
+        if (coupon.isIssueComplete()) {
+            applicationEventPublisher.publishEvent(new CouponIssueCompleteEvent(coupon.getId()));
+        }
     }
 
     @Transactional

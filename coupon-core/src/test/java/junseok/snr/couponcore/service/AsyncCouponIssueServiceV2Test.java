@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 import static junseok.snr.couponcore.util.CouponRedisUtils.getIssueRequestKey;
 import static junseok.snr.couponcore.util.CouponRedisUtils.getIssueRequestQueueKey;
 
-class AsyncCouponIssueServiceV2Test  extends TestConfig {
+class AsyncCouponIssueServiceV2Test extends TestConfig {
 
     @Autowired
     private AsyncCouponIssueServiceV2 sut;
