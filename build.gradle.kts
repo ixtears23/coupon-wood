@@ -1,5 +1,8 @@
 val bootJar: org.springframework.boot.gradle.tasks.bundling.BootJar by tasks
 
+bootJar.enabled = false
+
+
 plugins {
     java
     id("org.springframework.boot") version "3.2.4"
