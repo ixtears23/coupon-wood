@@ -4,7 +4,7 @@ java21, gradle(multi module), jpa, querydsl,
 mysql, h2, redis, docker, locust, sqs  
 
 ## 아키텍처
-- DB 성능 개선 <- Redis 캐시
+- DB 성능 개선 <- Redis 캐시
 - Redis 성능 개선 <- Caffein Cache(로컬 캐시)
 - Application 성능 개선 <- SQS 및 서버 분리
 - 모니터링(Prometheus, Grafana)
